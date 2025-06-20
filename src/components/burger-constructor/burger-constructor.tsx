@@ -1,24 +1,58 @@
 import { FC, useMemo } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { TConstructorIngredient } from '@utils-types';
 import { BurgerConstructorUI } from '@ui';
+import { RootState, AppDispatch } from '../../services/store';
+import {
+  createOrder,
+  clearOrder
+} from '../../services/slices/order-slice/order-slice';
+import { useNavigate } from 'react-router-dom';
 
 export const BurgerConstructor: FC = () => {
-  /** TODO: взять переменные constructorItems, orderRequest и orderModalData из стора */
-  const constructorItems = {
-    bun: {
-      price: 0
-    },
-    ingredients: []
-  };
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
 
-  const orderRequest = false;
+  const { selectedItems, selectedBun } = useSelector(
+    (state: RootState) => state.ingredients
+  );
 
-  const orderModalData = null;
+  const { user } = useSelector((state: RootState) => state.auth);
 
+  const {
+    orderData,
+    isLoading: orderRequest,
+    error
+  } = useSelector((state: RootState) => state.order);
+
+  const constructorItems = useMemo(
+    () => ({
+      bun: selectedBun,
+      ingredients: selectedItems
+    }),
+    [selectedBun, selectedItems]
+  );
   const onOrderClick = () => {
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+
     if (!constructorItems.bun || orderRequest) return;
+
+    const ingredientsIds = [
+      constructorItems.bun._id,
+      ...constructorItems.ingredients.map((item) => item._id),
+      constructorItems.bun._id
+    ];
+
+    dispatch(createOrder(ingredientsIds));
   };
-  const closeOrderModal = () => {};
+
+  const closeOrderModal = () => {
+    dispatch(clearOrder());
+    navigate('/');
+  };
 
   const price = useMemo(
     () =>
@@ -30,16 +64,15 @@ export const BurgerConstructor: FC = () => {
     [constructorItems]
   );
 
-  return null;
-
   return (
     <BurgerConstructorUI
       price={price}
       orderRequest={orderRequest}
       constructorItems={constructorItems}
-      orderModalData={orderModalData}
+      orderModalData={orderData?.order!}
       onOrderClick={onOrderClick}
       closeOrderModal={closeOrderModal}
+      user={user}
     />
   );
 };
