@@ -1,12 +1,11 @@
 import { FC, SyntheticEvent, useState, useEffect } from 'react';
 import { LoginUI } from '@ui-pages';
-import { useSelector } from 'react-redux';
 import {
   loginUser,
   clearError
 } from '../../services/slices/auth-slice/auth-slice';
-import { RootState, useDispatch } from '../../services/store';
-import { useNavigate } from 'react-router-dom';
+import { RootState, useDispatch, useSelector } from '../../services/store';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 export const Login: FC = () => {
   const [email, setEmail] = useState('');
@@ -16,11 +15,15 @@ export const Login: FC = () => {
     (state: RootState) => state.auth
   );
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleSubmit = (e: SyntheticEvent) => {
     e.preventDefault();
     dispatch(loginUser({ email, password }));
   };
+
+  // 🔑 Сохраняем путь, куда хотел попасть пользователь
+  const from = (location.state as { from?: Location })?.from?.pathname || '/';
 
   useEffect(
     () => () => {
@@ -31,9 +34,9 @@ export const Login: FC = () => {
 
   useEffect(() => {
     if (user) {
-      navigate('/');
+      navigate(from, { replace: true });
     }
-  }, [user, navigate]);
+  }, [user, from, navigate]);
 
   return (
     <LoginUI

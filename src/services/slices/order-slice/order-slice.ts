@@ -68,7 +68,6 @@ const orderSlice = createSlice({
   name: 'orders',
   initialState,
   reducers: {
-
     clearOrder: (state) => {
       state.orderData = null;
       state.currentOrder = null;

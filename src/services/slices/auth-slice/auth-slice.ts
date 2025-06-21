@@ -17,13 +17,15 @@ interface AuthState {
   isAuthChecked: boolean;
   isLoading: boolean;
   error: string | null;
+  isAuth: boolean;
 }
 
 const initialState: AuthState = {
   user: null,
   isAuthChecked: false,
   isLoading: false,
-  error: null
+  error: null,
+  isAuth: false
 };
 
 export const registerUser = createAsyncThunk(
@@ -117,6 +119,7 @@ const authSlice = createSlice({
         state.user = action.payload;
         state.isLoading = false;
         state.isAuthChecked = true;
+        state.isAuth = true;
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.isLoading = false;
@@ -131,6 +134,7 @@ const authSlice = createSlice({
         state.user = action.payload;
         state.isLoading = false;
         state.isAuthChecked = true;
+        state.isAuth = true;
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.isLoading = false;
@@ -144,6 +148,7 @@ const authSlice = createSlice({
       .addCase(logoutUser.fulfilled, (state) => {
         state.user = null;
         state.isLoading = false;
+        state.isAuth = false;
       })
       .addCase(logoutUser.rejected, (state, action) => {
         state.isLoading = false;
@@ -158,11 +163,14 @@ const authSlice = createSlice({
         state.user = action.payload;
         state.isLoading = false;
         state.isAuthChecked = true;
+        state.isAuth = !!action.payload;
       })
       .addCase(checkUserAuth.rejected, (state, action) => {
         state.isLoading = false;
         state.isAuthChecked = true;
         state.error = action.payload as string;
+        state.user = null;
+        state.isAuth = false;
       })
 
       .addCase(updateUser.pending, (state) => {

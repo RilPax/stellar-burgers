@@ -41,10 +41,8 @@ const ingredientsSlice = createSlice({
         const ingredient = action.payload;
 
         if (ingredient.type === 'bun') {
-
           state.selectedBun = ingredient;
         } else {
-
           state.selectedItems.push(ingredient);
         }
       },

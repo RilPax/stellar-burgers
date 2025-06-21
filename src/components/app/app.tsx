@@ -47,6 +47,7 @@ const App = () => {
         <Route element={<ProtectedRoutes />}>
           <Route path='/profile' element={<Profile />} />
           <Route path='/profile/orders' element={<ProfileOrders />} />
+          <Route path='/profile/orders/:number' element={<OrderInfo />} />
         </Route>
         <Route element={<PublicOnlyRoutes />}>
           <Route path='/forgot-password' element={<ForgotPassword />} />
@@ -57,7 +58,6 @@ const App = () => {
 
         <Route path='/ingredients/:id' element={<IngredientDetails />} />
         <Route path='/feed/:number' element={<OrderInfo />} />
-        <Route path='/profile/orders/:number' element={<OrderInfo />} />
         <Route path='*' element={<NotFound404 />} />
       </Routes>
 
@@ -79,14 +79,16 @@ const App = () => {
               </Modal>
             }
           />
-          <Route
-            path='/profile/orders/:number'
-            element={
-              <Modal title='Заказ профиля' onClose={handleCloseModal}>
-                <OrderInfo />
-              </Modal>
-            }
-          />
+          <Route element={<ProtectedRoutes />}>
+            <Route
+              path='/profile/orders/:number'
+              element={
+                <Modal title='Заказ профиля' onClose={handleCloseModal}>
+                  <OrderInfo />
+                </Modal>
+              }
+            />
+          </Route>
         </Routes>
       )}
     </div>

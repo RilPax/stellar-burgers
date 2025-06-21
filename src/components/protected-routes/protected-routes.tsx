@@ -1,9 +1,21 @@
-import { useSelector } from 'react-redux';
-import { Navigate, Outlet } from 'react-router-dom';
-import { RootState } from 'src/services/store';
+import { Navigate, Outlet, useLocation } from 'react-router-dom';
+import { RootState, useSelector } from '../../services/store';
+import { Preloader } from '@ui';
 
 export default function ProtectedRoutes() {
-  const { user } = useSelector((state: RootState) => state.auth);
+  const { isAuth, isAuthChecked } = useSelector(
+    (state: RootState) => state.auth
+  );
 
-  return user ? <Outlet /> : <Navigate to='/login' />;
+  const location = useLocation();
+
+  if (!isAuthChecked) {
+    return <Preloader />;
+  }
+
+  return isAuth ? (
+    <Outlet />
+  ) : (
+    <Navigate to='/login' replace state={{ from: location }} />
+  );
 }

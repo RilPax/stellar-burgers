@@ -1,14 +1,13 @@
 import { FC } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ProfileMenuUI } from '@ui';
-import { useDispatch } from 'react-redux';
 import { logoutUser } from '../../services/slices/auth-slice/auth-slice';
-import { AppDispatch } from '../../services/store';
+import { useDispatch } from '../../services/store';
 
 export const ProfileMenu: FC = () => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useDispatch();
 
   const handleLogout = async () => {
     try {
