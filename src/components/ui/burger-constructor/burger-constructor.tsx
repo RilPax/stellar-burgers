@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import { FC } from 'react';
 import {
   Button,
   ConstructorElement,
@@ -16,7 +16,8 @@ export const BurgerConstructorUI: FC<BurgerConstructorUIProps> = ({
   price,
   orderModalData,
   onOrderClick,
-  closeOrderModal
+  closeOrderModal,
+  user
 }) => (
   <section className={styles.burger_constructor}>
     {constructorItems.bun ? (
@@ -82,7 +83,7 @@ export const BurgerConstructorUI: FC<BurgerConstructorUIProps> = ({
         htmlType='button'
         type='primary'
         size='large'
-        children='Оформить заказ'
+        children={user ? 'Оформить заказ' : 'Войти в аккаунт'}
         onClick={onOrderClick}
       />
     </div>

@@ -26,6 +26,12 @@ export type TOrder = {
   ingredients: string[];
 };
 
+export type TNewOrderResponse = {
+  name: string;
+  order: TOrder;
+  success: boolean;
+};
+
 export type TOrdersData = {
   orders: TOrder[];
   total: number;
