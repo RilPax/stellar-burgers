@@ -6,6 +6,7 @@ import {
   createOrder,
   clearOrder
 } from '../../services/slices/order-slice/order-slice';
+import { clearSelectedIngredients } from '../../services/slices/ingridients/ingridients-slice';
 import { useNavigate } from 'react-router-dom';
 
 export const BurgerConstructor: FC = () => {
@@ -46,6 +47,7 @@ export const BurgerConstructor: FC = () => {
     ];
 
     dispatch(createOrder(ingredientsIds));
+    dispatch(clearSelectedIngredients());
   };
 
   const closeOrderModal = () => {
