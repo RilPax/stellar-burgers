@@ -1,35 +1,36 @@
 // cypress/e2e/ingredient-add.cy.ts
 
+import { bunName, ingredientSelector, ingredientName, ingredientsSelector } from "cypress/support/constants";
+
 describe('Добавление ингредиентов в конструктор', () => {
   beforeEach(() => {
     cy.intercept('GET', '**/api/ingredients', { fixture: 'ingredients.json' }).as('getIngredients');
-    cy.visit('http://localhost:4000/');
+    cy.visit('/');
     cy.wait('@getIngredients');
   });
 
-  test('добавляет булку и отображает её в конструкторе', () => {
-    cy.contains('Краторная булка N-200i')
+  it('добавляет булку и отображает её в конструкторе', () => {
+    cy.contains(bunName)
       .parent()
       .within(() => {
         cy.contains('Добавить').click();
       });
 
-    cy.contains('Краторная булка N-200i (верх)').should('exist');
+    cy.contains(`${bunName} (верх)`).should('exist');
 
-    cy.contains('Краторная булка N-200i (низ)').should('exist');
+    cy.contains(`${bunName} (низ)`).should('exist');
   });
 
-  test('добавляет начинку и отображает её в списке', () => {
-    const ingredientName = 'Биокотлета из марсианской Магнолии';
-    cy.get('[data-cy="ingredient-Биокотлета из марсианской Магнолии"]')
+  it('добавляет начинку и отображает её в списке', () => {
+    cy.get(ingredientSelector)
       .contains(ingredientName)
-      .parents('[data-cy="ingredient-Биокотлета из марсианской Магнолии"]')
+      .parents(ingredientSelector)
       .within(() => {
         cy.contains('Добавить').click();
       });
 
-    cy.get('[data-cy="ingredients"]')
-      .should('contain', 'Биокотлета из марсианской Магнолии');
+    cy.get(ingredientsSelector)
+      .should('contain', ingredientName);
 
   });
 });

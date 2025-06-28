@@ -1,4 +1,7 @@
+import { bunName, ingredientName, ingredientsSelector, modalCloseSelector, modalSelector } from "cypress/support/constants";
+
 describe('Создание заказа', () => {
+
   beforeEach(() => {
     cy.setCookie('accessToken', 'mock-access-token');
     cy.setCookie('refreshToken', 'mock-refresh-token');
@@ -8,7 +11,7 @@ describe('Создание заказа', () => {
     cy.intercept('GET', '**/auth/user', {
       success: true,
       user: {
-        email: 'test@example.com',
+        email: 'it@example.com',
         name: 'Тестовый Пользователь'
       }
     }).as('getUser');
@@ -21,18 +24,18 @@ describe('Создание заказа', () => {
       }
     }).as('createOrder');
 
-    cy.visit('http://localhost:4000');
+    cy.visit('/');
   });
 
-  test('Полный сценарий создания заказа', () => {
-    cy.contains('Краторная булка N-200i')
+  it('Полный сценарий создания заказа', () => {
+    cy.contains(bunName)
       .scrollIntoView()
       .parent()
       .within(() => {
         cy.contains('Добавить').click();
       });
 
-    cy.contains('Биокотлета из марсианской Магнолии')
+    cy.contains(ingredientName)
       .scrollIntoView()
       .parent()
       .within(() => {
@@ -42,13 +45,13 @@ describe('Создание заказа', () => {
     cy.contains('Оформить заказ').click();
 
     cy.wait('@createOrder');
-    cy.get('[data-cy="modal"]').should('exist');
-    cy.get('[data-cy="modal"]').should('contain', '123456');
+    cy.get(modalSelector).should('exist');
+    cy.get(modalSelector).should('contain', '123456');
 
-    cy.get('[data-cy="modal-close"]').click();
-    cy.get('[data-cy="modal"]').should('not.exist');
+    cy.get(modalCloseSelector).click();
+    cy.get(modalSelector).should('not.exist');
 
-    cy.get('[data-cy="ingredients"] li').should('have.length', 0);
+    cy.get(`${ingredientsSelector} li`).should('have.length', 0);
     cy.get('[data-cy="bun"]').should('not.exist');
   });
 });
